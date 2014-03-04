@@ -3,6 +3,5 @@ before_install:
   - export LANG="en_US.UTF-8"
   - gem update --system
   - gem install cocoapods
-rvm: 1.9.3
 xcode_workspace: KCTViewer.xcworkspace
-xcode_scheme: KCTViewerTests
+xcode_scheme: KCTViewer
