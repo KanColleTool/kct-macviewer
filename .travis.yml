@@ -1,0 +1,5 @@
+language: objective-c
+before_install:
+  - export LANG=en_US.UTF-8
+  - gem install -q cocoapods
+script: xctool -workspace KCTViewer.xcworkspace -scheme KCTViewer -configuration Release CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
