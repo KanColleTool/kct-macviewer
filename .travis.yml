@@ -1,4 +1,3 @@
 language: objective-c
 xcode_workspace: KCTViewer.xcworkspace
 xcode_scheme: KCTViewerTests
-
