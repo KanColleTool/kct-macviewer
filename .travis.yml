@@ -1,5 +1,6 @@
 language: objective-c
 before_install:
+  - export LANG="en_US.UTF-8"
   - gem update --system
   - gem install cocoapods
 rvm: 1.9.3
