@@ -43,8 +43,6 @@ static NSMutableSet *loadedURLs;
 	BOOL load = YES;
 	if((self.cacheEntry = [NSKeyedUnarchiver unarchiveObjectWithFile:[self cachePath]]) && self.cacheEntry.response && self.cacheEntry.data)
 	{
-		NSLog(@"   -- Cache Entry Exists");
-		
 		// As a quick-and-dirty alternative to proper handling of the "Cache-Control" header, we just check cache validity
 		// based on if the URL has been loaded before during this session.
 		if(![loadedURLs containsObject:self.request.URL])
@@ -90,7 +88,6 @@ static NSMutableSet *loadedURLs;
 {
 	if([(NSHTTPURLResponse *)response statusCode] == 304)
 	{
-		NSLog(@"   -- Unmodified!");
 		[loadedURLs addObject:self.request.URL];
 		[self.client URLProtocol:self didReceiveResponse:self.cacheEntry.response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
 		[self.client URLProtocol:self didLoadData:self.cacheEntry.data];
