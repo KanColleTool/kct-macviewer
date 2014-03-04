@@ -101,6 +101,7 @@ static NSMutableSet *loadedURLs;
 	{
 		[NSKeyedArchiver archiveRootObject:self.cacheEntry toFile:[self cachePath]];
 		self.cacheEntry = [[KVCacheEntry alloc] initWithRequest:self.request];
+		[self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
 	}
 	else
 	{
