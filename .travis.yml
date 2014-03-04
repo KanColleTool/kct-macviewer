@@ -7,3 +7,4 @@ before_install:
   - gem install cocoapods
 xcode_workspace: KCTViewer.xcworkspace
 xcode_scheme: KCTViewer
+xcode_sdk: macosx10.8
