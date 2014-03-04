@@ -537,6 +537,7 @@
 					"\"$(SRCROOT)/../../lib/HTTP-Proxy/deps/asio-1.10.1/include\"",
 				);
 				INFOPLIST_FILE = "KCTViewer/KCTViewer-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -558,6 +559,7 @@
 					"\"$(SRCROOT)/../../lib/HTTP-Proxy/deps/asio-1.10.1/include\"",
 				);
 				INFOPLIST_FILE = "KCTViewer/KCTViewer-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
