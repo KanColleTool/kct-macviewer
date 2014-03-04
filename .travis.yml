@@ -3,5 +3,7 @@ before_install:
   - export LANG="en_US.UTF-8"
   - gem update --system
   - gem install cocoapods
+  - brew update
+  - brew install xctool
 xcode_workspace: KCTViewer.xcworkspace
 xcode_scheme: KCTViewer
