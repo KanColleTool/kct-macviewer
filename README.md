@@ -1,0 +1,2 @@
+KanColleTool Mac Viewer
+-----------------------
