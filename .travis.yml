@@ -1,4 +1,7 @@
 language: objective-c
+before_install:
+  - gem update --system
+  - gem install cocoapods
 rvm: 1.9.3
 xcode_workspace: KCTViewer.xcworkspace
 xcode_scheme: KCTViewerTests
