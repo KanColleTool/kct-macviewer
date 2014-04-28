@@ -85,7 +85,7 @@
 	translator.tldata = @{
 						  @"1140633492": @"Success",
 						  @"124853853": @"Naka",
-						  @"2504130759": @"Kongou",
+						  @"2751887919": @"Kongou",
 						  @"34282435": @"Akagi",
 						  @"3302450663": @"Kaga"
 						  };
@@ -112,7 +112,7 @@
 	XCTAssertEqualObjects(translatedResponse[@"api_data"][@"api_data_dict"][@"api_data_l2_number"], @1337, @"L2 number changed");
 	
 	XCTAssertEqualObjects(translatedResponse[@"api_result_msg"], @"Success", @"L0 Translation incorrect");
-	XCTAssertEqualObjects(translatedResponse[@"api_data"][@"api_translatable_string"], @"Naka", @"L1 Translation incorrect");
+	XCTAssertEqualObjects(translatedResponse[@"api_data"][@"api_data_translatable_string"], @"Naka", @"L1 Translation incorrect");
 	XCTAssertEqualObjects(translatedResponse[@"api_data"][@"api_data_dict"][@"api_data_l2_translatable_string"], @"Kongou", @"L2 Translation incorrect");
 	XCTAssertEqualObjects(translatedResponse[@"api_data"][@"api_data_array"][0], @"Akagi", @"L2A:0 Translation Incorrect");
 	XCTAssertEqualObjects(translatedResponse[@"api_data"][@"api_data_array"][1], @"Kaga", @"L2A:1 Translation Incorrect");
