@@ -65,4 +65,57 @@
 	XCTAssertEqualObjects([translator translate:@"\\u307E\\u308B\\u3086"], @"\\u307E\\u308B\\u3086", @"Untranslated Escaped strings aren't untouched!");
 }
 
+- (void)testJSONTranslation
+{
+	// Make a local translator
+	KVTranslator *translator = [[KVTranslator alloc] init];
+	
+	// Prepare a test server response and translation data
+	NSDictionary *testResponse = @{ @"api_result": @1, @"api_result_msg": @"成功", @"api_data": @{		// 成功 = Success
+												@"api_data_translatable_string": @"那珂",				// 那珂 = Naka
+												@"api_data_untranslatable_string": @"テスト",
+												@"api_data_number": @42,
+												@"api_data_dict": @{
+														@"api_data_l2_translatable_string": @"金剛",		// 金剛 = Kongou
+														@"api_data_l2_untranslatable_string": @"おっぱい",
+														@"api_data_l2_number": @1337,
+														},
+												@"api_data_array": @[ @"赤城", @"加賀" ]					// 赤城 = Akagi, 加賀 = Kaga
+												} };
+	translator.tldata = @{
+						  @"1140633492": @"Success",
+						  @"124853853": @"Naka",
+						  @"2504130759": @"Kongou",
+						  @"34282435": @"Akagi",
+						  @"3302450663": @"Kaga"
+						  };
+	
+	// Encode the response
+	NSError *serializationError = nil;
+	NSData *testResponseData = [NSJSONSerialization dataWithJSONObject:testResponse options:NSJSONWritingPrettyPrinted error:&serializationError];
+	XCTAssertNil(serializationError, @"Serialization Error");
+	
+	// Try to translate it
+	NSData *translatedData = [translator translateJSON:testResponseData];
+	XCTAssertNotNil(translatedData, @"Translator returned no data");
+	
+	// Decode it
+	NSError *deserializationError = nil;
+	NSDictionary *translatedResponse = [NSJSONSerialization JSONObjectWithData:translatedData options:NSJSONReadingMutableContainers error:&deserializationError];
+	XCTAssertNil(deserializationError, @"Deserialization error");
+	
+	// Sanity check it
+	XCTAssertNotEqualObjects(testResponse, translatedResponse, @"The translator didn't even touch the data");
+	
+	XCTAssertEqualObjects(translatedResponse[@"api_result"], @1, @"api_result changed");
+	XCTAssertEqualObjects(translatedResponse[@"api_data"][@"api_data_number"], @42, @"L1 number changed");
+	XCTAssertEqualObjects(translatedResponse[@"api_data"][@"api_data_dict"][@"api_data_l2_number"], @1337, @"L2 number changed");
+	
+	XCTAssertEqualObjects(translatedResponse[@"api_result_msg"], @"Success", @"L0 Translation incorrect");
+	XCTAssertEqualObjects(translatedResponse[@"api_data"][@"api_translatable_string"], @"Naka", @"L1 Translation incorrect");
+	XCTAssertEqualObjects(translatedResponse[@"api_data"][@"api_data_dict"][@"api_data_l2_translatable_string"], @"Kongou", @"L2 Translation incorrect");
+	XCTAssertEqualObjects(translatedResponse[@"api_data"][@"api_data_array"][0], @"Akagi", @"L2A:0 Translation Incorrect");
+	XCTAssertEqualObjects(translatedResponse[@"api_data"][@"api_data_array"][1], @"Kaga", @"L2A:1 Translation Incorrect");
+}
+
 @end
