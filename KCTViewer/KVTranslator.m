@@ -47,12 +47,12 @@
 	
 	if(translation != nil && (NSNull*)translation != [NSNull null])
 	{
-		//NSLog(@"TL: %@ -> %@", unescapedLine, translation);
+		NSLog(@"TL: %@ -> %@", unescapedLine, translation);
 		return translation;
 	}
 	else
 	{
-		//NSLog(@"No TL: %@", unescapedLine);
+		NSLog(@"No TL: %@", unescapedLine);
 		return line;
 	}
 }
@@ -66,7 +66,7 @@
 	// Deserialize the root object
 	NSError *error = nil;
 	id root = [NSJSONSerialization JSONObjectWithData:(!hasPrefix ? json : [json subdataWithRange:NSMakeRange(7, [json length]-7)])
-											  options:0 error:&error];
+											  options:NSJSONReadingMutableContainers|NSJSONReadingAllowFragments error:&error];
 	
 	if(!error)
 	{
@@ -91,23 +91,22 @@
 - (id)_walk:(id)obj
 {
 	if([obj isKindOfClass:[NSDictionary class]])
-	{
-		NSMutableDictionary *dict = [(NSDictionary*)obj mutableCopy];
-		for (id<NSCopying> key in [dict allKeys])
-			[dict setObject:[self _walk:[dict objectForKey:key]] forKey:key];
-		return dict;
-	}
+		for (id<NSCopying> key in [obj allKeys])
+			[obj setObject:[self _walk:[obj objectForKey:key]] forKey:key];
 	else if([obj isKindOfClass:[NSArray class]])
-	{
-		NSMutableArray *arr = [(NSArray*)obj mutableCopy];
-		for(NSInteger i = 0; i < [arr count]; i++)
-			[arr replaceObjectAtIndex:i withObject:[self _walk:[arr objectAtIndex:i]]];
-		return arr;
-	}
+		for(NSInteger i = 0; i < [obj count]; i++)
+			[obj replaceObjectAtIndex:i withObject:[self _walk:[obj objectAtIndex:i]]];
 	else if([obj isKindOfClass:[NSString class]])
-		return [self translate:(NSString*)obj];
+		return [self translate:obj];
+	
+	// Ignore these!
+	else if([obj isKindOfClass:[NSNumber class]]) {}
+	else if([obj isKindOfClass:[NSNull class]]) {}
+	
 	else
-		return obj;
+		NSLog(@"!!!!> Don't know what to do about a %@...", [obj class]);
+	
+	return obj;
 }
 
 @end

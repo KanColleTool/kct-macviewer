@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface KVTranslator : NSObject
+
 @property (nonatomic, strong) NSDictionary *tldata;
 
 + (instancetype)sharedTranslator;
