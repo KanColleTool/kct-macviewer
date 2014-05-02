@@ -56,10 +56,20 @@ int KVChunkTranslator_cb_string(void *ctx, const unsigned char *val, size_t len)
 
 - (NSData *)receivedChunk:(NSData *)chunk
 {
-	bool had_prefix = false;
-	const char *prefix = "svdata=";
 	const unsigned char *text = [chunk bytes];
 	size_t size = [chunk length];
+	
+	// Skip UTF-8 BOM if present
+	const char bom[] = {0xEF, 0xBB, 0xBF};
+	if(memcmp(bom, text, 3) == 0)
+	{
+		text += 3;
+		size -= 3;
+	}
+	
+	// Skip, but acknowledge, a "svdata=" (the game needs it prepended to work)
+	bool had_prefix = false;
+	const char *prefix = "svdata=";
 	if(memcmp(prefix, text, strlen(prefix)) == 0)
 	{
 		text += strlen(prefix);
