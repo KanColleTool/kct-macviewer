@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) NSURLConnection *connection;
 @property (nonatomic, strong) NSOutputStream *toolStream;
+@property (nonatomic, strong) AFHTTPRequestOperation *toolForwardOperation;
 //@property (nonatomic, strong) NSMutableData *buffer;
 @property (nonatomic, strong) KVChunkTranslator *translator;
 @property (nonatomic, assign, getter=isInteresting) BOOL interesting;
