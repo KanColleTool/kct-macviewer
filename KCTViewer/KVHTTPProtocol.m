@@ -37,26 +37,6 @@
 	self.interesting = [self.request.URL.path hasPrefix:@"/kcsapi"];
 	self.translator = [[KVChunkTranslator alloc] init];
 	self.connection = [NSURLConnection connectionWithRequest:self.request delegate:self];
-	
-	if([self isInteresting])
-	{
-		// Formulate a request to the tool
-		NSURL *toolURL = [NSURL URLWithString:@"http://127.0.0.1:54321/"];
-		NSMutableURLRequest *toolRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:self.request.URL.path relativeToURL:toolURL]];
-		toolRequest.HTTPMethod = @"POST";
-		
-		self.toolForwardOperation = [[AFHTTPRequestOperation alloc] initWithRequest:toolRequest];
-		
-		// Create an input/output stream pair to stream data to the tool
-		CFReadStreamRef readStream;
-		CFWriteStreamRef writeStream;
-		CFStreamCreateBoundPair(NULL, &readStream, &writeStream, 1024*4);
-		self.toolStream = (__bridge NSOutputStream *)(writeStream);
-		self.toolForwardOperation.inputStream = (__bridge NSInputStream *)(readStream);
-		
-		// Start it
-		[self.toolForwardOperation start];
-	}
 }
 
 - (void)stopLoading
@@ -77,30 +57,50 @@
 			[self.client URLProtocol:self didLoadData:data];
 			self.interesting = NO;
 		}
+		
+		if(self.buffer) [self.buffer appendData:data];
+		else self.buffer = [data mutableCopy];
 	}
 	else
 		[self.client URLProtocol:self didLoadData:data];
-	
-	[self.toolStream write:[data bytes] maxLength:[data length]];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
 	[self.client URLProtocol:self didFailWithError:error];
-	[self.toolStream close];
 	self.connection = nil;
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
 	[self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
+	[self forwardToTool];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
 	[self.client URLProtocolDidFinishLoading:self];
-	[self.toolStream close];
+	[self forwardToTool];
 	self.connection = nil;
+}
+
+- (void)forwardToTool
+{
+	if([self isInteresting])
+	{
+		NSURL *toolURL = [NSURL URLWithString:@"http://127.0.0.1:54321/"];
+		NSMutableURLRequest *toolRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:self.request.URL.path relativeToURL:toolURL]];
+		toolRequest.HTTPMethod = @"POST";
+		toolRequest.HTTPBody = self.buffer;
+		
+		AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:toolRequest];
+		op.responseSerializer = [AFJSONResponseSerializer serializer];
+		op.responseSerializer.acceptableStatusCodes = [NSMutableIndexSet indexSetWithIndex:200];
+		[(NSMutableIndexSet*)op.responseSerializer.acceptableStatusCodes addIndex:404];
+		[op start];
+	}
+	
+	self.buffer = nil;
 }
 
 @end
