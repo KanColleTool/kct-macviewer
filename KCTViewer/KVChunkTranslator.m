@@ -67,14 +67,16 @@ int KVChunkTranslator_cb_string(void *ctx, const unsigned char *val, size_t len)
 		had_prefix = true;
 	}
 	
-	NSLog(@"%s", prefix);
-	NSLog(@"%s", text);
-	
 	if(size > 0)
 	{
 		yajl_status parse_status = yajl_parse(_parser, text, size);
 		if(parse_status != yajl_status_ok)
-			NSLog(@"YAJL Error: %s", yajl_status_to_string(parse_status));
+		{
+			unsigned char *error = yajl_get_error(_parser, 1, text, size);
+			NSLog(@"YAJL Error at %zu:\n%s", yajl_get_bytes_consumed(_parser), error);
+			yajl_free_error(_parser, error);
+			return nil;
+		}
 		
 		const unsigned char *buf;
 		size_t buf_len;
