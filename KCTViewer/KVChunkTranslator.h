@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <yajl/yajl_parse.h>
-#import <yajl/yajl_gen.h>
+#import <yajl_parse.h>
+#import <yajl_gen.h>
 
 @interface KVChunkTranslator : NSObject
 {
