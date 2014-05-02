@@ -30,7 +30,8 @@
 	
 	// For all our out-of-browser networking needs
 	self.manager = [AFHTTPRequestOperationManager manager];
-	self.manager.responseSerializer.acceptableContentTypes = [self.manager.responseSerializer.acceptableContentTypes setByAddingObject:@"application/octet-stream"];
+	//self.manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+	self.manager.responseSerializer.acceptableContentTypes = [self.manager.responseSerializer.acceptableContentTypes setByAddingObjectsFromSet:[NSSet setWithObjects:@"application/octet-stream", @"text/plain", nil]];
 
 	// No, we don't want the web view to scroll just a few pixels up and down.
 	[self.webView.mainFrame.frameView setAllowsScrolling:NO];
@@ -109,18 +110,27 @@
 		[req setTimeoutInterval:10];
 		AFHTTPRequestOperation *op = [_manager HTTPRequestOperationWithRequest:req success:^(AFHTTPRequestOperation *operation, id responseObject) {
 			
-			// responseObject is a dictionary, unless something is really wrong here
-			// (see: undetected Captive Portal)
-			NSDictionary *res = responseObject;
-			if(![[res objectForKey:@"success"] isEqual:[NSNumber numberWithInt:1]])
+			if([responseObject isKindOfClass:[NSDictionary class]])
 			{
-				[[NSAlert alertWithMessageText:@"Translation API returned an error" defaultButton:@"Retry" alternateButton:@"Continue" otherButton:nil informativeTextWithFormat:@"The Translation API doesn't seem to be working. You can continue without translation data, but the game will be in Japanese. Continue?"] beginSheetModalForWindow:_window completionHandler:^(NSModalResponse returnCode) {
-					if(returnCode == NSAlertDefaultReturn) [self loadTranslation];
-				}];
+				// responseObject is a dictionary, unless something is really wrong here
+				// (see: undetected Captive Portal)
+				NSDictionary *res = responseObject;
+				if(![[res objectForKey:@"success"] isEqual:[NSNumber numberWithInt:1]])
+				{
+					[[NSAlert alertWithMessageText:@"Translation API returned an error" defaultButton:@"Retry" alternateButton:@"Continue" otherButton:nil informativeTextWithFormat:@"The Translation API doesn't seem to be working. You can continue without translation data, but the game will be in Japanese. Continue?"] beginSheetModalForWindow:_window completionHandler:^(NSModalResponse returnCode) {
+						if(returnCode == NSAlertDefaultReturn) [self loadTranslation];
+					}];
+				}
+				else
+				{
+					[[KVTranslator sharedTranslator] setTldata:[res objectForKey:@"translation"]];
+				}
 			}
 			else
 			{
-				[[KVTranslator sharedTranslator] setTldata:[res objectForKey:@"translation"]];
+				[[NSAlert alertWithMessageText:@"Failed to load Translation Data" defaultButton:@"Retry" alternateButton:@"Continue" otherButton:nil informativeTextWithFormat:@"This usually means that your connection is down, or that the translation API is. You can continue without this, but the game will be in Japanese. Continue?"] beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
+					if(returnCode == NSAlertDefaultReturn) [self loadTranslation];
+				}];
 			}
 			
 			[self loadTranslationFinished];
