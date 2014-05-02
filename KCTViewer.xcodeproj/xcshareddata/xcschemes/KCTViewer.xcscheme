@@ -14,23 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AF897D550AB141D0849EBB88"
+               BlueprintIdentifier = "9948D49E607B42EAA7C0D0A9"
                BuildableName = "libPods.a"
                BlueprintName = "Pods"
-               ReferencedContainer = "container:Pods/Pods.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3F1C4815CAB142488717F295"
-               BuildableName = "libPods-AFNetworking.a"
-               BlueprintName = "Pods-AFNetworking"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

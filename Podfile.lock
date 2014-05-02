@@ -20,13 +20,16 @@ PODS:
   - FMDB/common (2.2)
   - FMDB/standard (2.2):
     - FMDB/common
+  - yajl (2.0.4)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.0)
   - FMDB (~> 2.0)
+  - yajl (~> 2.0)
 
 SPEC CHECKSUMS:
   AFNetworking: 0121f4b69be3fa58d1ab317866e036e12ac9651d
   FMDB: e0dd09464b4e1a1cd7fa51ea835ae821b5656865
+  yajl: da989d6102a3fe9bd06f4340c7eb63afac2dc55a
 
 COCOAPODS: 0.32.1
