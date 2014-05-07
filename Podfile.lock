@@ -15,6 +15,7 @@ PODS:
   - AFNetworking/Reachability (2.2.1)
   - AFNetworking/Security (2.2.1)
   - AFNetworking/Serialization (2.2.1)
+  - CocoaAsyncSocket (7.3.4)
   - FMDB (2.2):
     - FMDB/standard
   - FMDB/common (2.2)
@@ -24,11 +25,13 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (~> 2.0)
+  - CocoaAsyncSocket (~> 7.3)
   - FMDB (~> 2.0)
   - yajl (~> 2.0)
 
 SPEC CHECKSUMS:
   AFNetworking: 0121f4b69be3fa58d1ab317866e036e12ac9651d
+  CocoaAsyncSocket: 534d09416f992fd51efb23f534742ce70b3a7999
   FMDB: e0dd09464b4e1a1cd7fa51ea835ae821b5656865
   yajl: da989d6102a3fe9bd06f4340c7eb63afac2dc55a
 

@@ -37,6 +37,18 @@
 	self.interesting = [self.request.URL.path hasPrefix:@"/kcsapi"];
 	self.translator = [[KVChunkTranslator alloc] init];
 	self.connection = [NSURLConnection connectionWithRequest:self.request delegate:self];
+	
+	if([self isInteresting])
+	{
+		self.toolSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+		NSError *error = nil;
+		[self.toolSocket connectToHost:@"127.0.0.1" onPort:54321 error:&error];
+		if(error)
+		{
+			NSLog(@"Couldn't connect to tool: %@", error);
+			self.toolSocket = nil;
+		}
+	}
 }
 
 - (void)stopLoading
@@ -50,16 +62,27 @@
 	{
 		NSData *translatedChunk = [_translator receivedChunk:data];
 		if(translatedChunk)
+		{
 			[self.client URLProtocol:self didLoadData:translatedChunk];
+		}
 		else
 		{
 			// Bail out if the translator errors!
-			[self.client URLProtocol:self didLoadData:data];
+			NSLog(@"Translation Error!");
+			
 			self.interesting = NO;
+			[self connection:connection didReceiveData:data];
+			return;
 		}
 		
-		if(self.buffer) [self.buffer appendData:data];
-		else self.buffer = [data mutableCopy];
+		if(self.toolSocket)
+		{
+			NSMutableData *chunk = [[NSMutableData alloc] init];
+			[chunk appendData:[[NSString stringWithFormat:@"%lx\r\n", (unsigned long)[data length]] dataUsingEncoding:NSUTF8StringEncoding]];
+			[chunk appendData:data];
+			[chunk appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+			[self.toolSocket writeData:chunk withTimeout:10 tag:1];
+		}
 	}
 	else
 		[self.client URLProtocol:self didLoadData:data];
@@ -68,39 +91,47 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
 	[self.client URLProtocol:self didFailWithError:error];
+	[self finishForwarding];
 	self.connection = nil;
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
 	[self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
-	[self forwardToTool];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
 	[self.client URLProtocolDidFinishLoading:self];
-	[self forwardToTool];
+	[self finishForwarding];
 	self.connection = nil;
 }
 
-- (void)forwardToTool
+- (void)finishForwarding
 {
-	if([self isInteresting])
-	{
-		NSURL *toolURL = [NSURL URLWithString:@"http://127.0.0.1:54321/"];
-		NSMutableURLRequest *toolRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:self.request.URL.path relativeToURL:toolURL]];
-		toolRequest.HTTPMethod = @"POST";
-		toolRequest.HTTPBody = self.buffer;
-		
-		AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:toolRequest];
-		op.responseSerializer = [AFJSONResponseSerializer serializer];
-		op.responseSerializer.acceptableStatusCodes = [NSMutableIndexSet indexSetWithIndex:200];
-		[(NSMutableIndexSet*)op.responseSerializer.acceptableStatusCodes addIndex:404];
-		[op start];
-	}
-	
-	self.buffer = nil;
+	[self.toolSocket writeData:[@"0\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding] withTimeout:10 tag:2];
+	[self.toolSocket disconnectAfterReadingAndWriting];
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
+{
+	NSLog(@"Connected to %@:%d", host, port);
+	NSMutableData *httpHeader = [[NSMutableData alloc] init];
+	[httpHeader appendData:[[NSString stringWithFormat:@"%@ %@ HTTP/1.1\r\n", self.request.HTTPMethod, self.request.URL.path] dataUsingEncoding:NSUTF8StringEncoding]];
+	[httpHeader appendData:[[NSString stringWithFormat:@"Host: %@:%@\r\n", self.request.URL.host, (self.request.URL.port ? self.request.URL.port : @80)] dataUsingEncoding:NSUTF8StringEncoding]];
+	[httpHeader appendData:[@"Transfer-Encoding: chunked\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+	[httpHeader appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+	[sock writeData:httpHeader withTimeout:0 tag:0];
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
+{
+	NSLog(@"-> Data with Tag %ld Written", tag);
+}
+
+- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
+{
+	NSLog(@"--> Disconnected: %@", err);
 }
 
 @end

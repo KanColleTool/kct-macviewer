@@ -8,11 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import "KVChunkTranslator.h"
+#import <GCDAsyncSocket.h>
 
-@interface KVHTTPProtocol : NSURLProtocol <NSURLConnectionDelegate,NSURLConnectionDataDelegate>
+@interface KVHTTPProtocol : NSURLProtocol <NSURLConnectionDelegate,NSURLConnectionDataDelegate,GCDAsyncSocketDelegate>
 
 @property (nonatomic, strong) NSURLConnection *connection;
-@property (nonatomic, strong) NSMutableData *buffer;
+@property (nonatomic, strong) GCDAsyncSocket *toolSocket;
 @property (nonatomic, strong) KVChunkTranslator *translator;
 @property (nonatomic, assign, getter=isInteresting) BOOL interesting;
 
@@ -22,7 +23,6 @@
 
 - (void)startLoading;
 - (void)stopLoading;
-
-- (void)forwardToTool;
+- (void)finishForwarding;
 
 @end

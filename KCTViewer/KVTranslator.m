@@ -47,12 +47,12 @@
 	
 	if(translation != nil && (NSNull*)translation != [NSNull null])
 	{
-		NSLog(@"TL: %@ -> %@", unescapedLine, translation);
+		//NSLog(@"TL: %@ -> %@", unescapedLine, translation);
 		return translation;
 	}
 	else
 	{
-		NSLog(@"No TL: %@", unescapedLine);
+		//NSLog(@"No TL: %@", unescapedLine);
 		return line;
 	}
 }
