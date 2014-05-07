@@ -35,11 +35,11 @@
 {
 	[[self class] setProperty:[NSNumber numberWithBool:YES] forKey:@"_handled" inRequest:(NSMutableURLRequest*)self.request];
 	self.interesting = [self.request.URL.path hasPrefix:@"/kcsapi"];
-	self.translator = [[KVChunkTranslator alloc] init];
 	self.connection = [NSURLConnection connectionWithRequest:self.request delegate:self];
 	
 	if([self isInteresting])
 	{
+		self.translator = [[KVChunkTranslator alloc] initWithPathForReporting:self.request.URL.path];
 		self.toolSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
 		NSError *error = nil;
 		[self.toolSocket connectToHost:@"127.0.0.1" onPort:54321 error:&error];

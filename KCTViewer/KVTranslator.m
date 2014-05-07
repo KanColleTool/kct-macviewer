@@ -11,7 +11,7 @@
 
 @interface KVTranslator ()
 
-- (id)_walk:(id)obj;
+- (id)_walk:(id)obj pathForReporting:(NSString *)path key:(NSString *)key;
 
 @end
 
@@ -28,10 +28,22 @@
     return sharedInstance;
 }
 
-- (NSString *)translate:(NSString *)line
+- (id)init
+{
+	if((self = [super init]))
+	{
+		_manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://api.comeonandsl.am/"]];
+		
+		self.reportBlacklist = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"report_blacklist" ofType:@"json"]] options:0 error:NULL];
+	}
+	
+	return self;
+}
+
+- (NSString *)translate:(NSString *)line pathForReporting:(NSString *)path key:(NSString *)key
 {
 	// Don't translate things that are just numbers and punctuation, such as some stats that are sent as
-	// strings for no real reason and timers. Make a set containing only numbers and punctuation, invert it
+	// strings for no real reason, and timers. Make a set containing only numbers and punctuation, invert it
 	// to match everything /but/ it, and check if it contains anything matching this inverted set. If it
 	// doesn't, there's nothing to translate.
 	NSCharacterSet *set = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789,.:-"] invertedSet];
@@ -43,7 +55,8 @@
 	CFStringTransform((__bridge CFMutableStringRef)unescapedLine, NULL, CFSTR("Any-Hex/Java"), YES);
 	
 	// Look up a translation
-	NSString *translation = [self.tldata objectForKey:[NSString stringWithFormat:@"%lu", [unescapedLine crc32]]];
+	NSString *crc32 = [NSString stringWithFormat:@"%lu", [unescapedLine crc32]];
+	NSString *translation = [self.tldata objectForKey:crc32];
 	
 	if(translation != nil && (NSNull*)translation != [NSNull null])
 	{
@@ -52,12 +65,26 @@
 	}
 	else
 	{
-		//NSLog(@"No TL: %@", unescapedLine);
+		NSLog(@"No TL: %@->%@: %@", path, key, unescapedLine);
+		if([[NSUserDefaults standardUserDefaults] boolForKey:@"reportUntranslated"] && [path length] > 0)
+		{
+			NSArray *blacklistedKeys = [_reportBlacklist objectForKey:path];
+			if(![blacklistedKeys containsObject:key])
+			{
+				[_tldata setValue:[NSNull null] forKey:crc32];
+				[_manager POST:[NSString stringWithFormat:@"/report/%@", path] parameters:@{@"value": unescapedLine} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+					NSLog(@"Reported untranslated line: %@", unescapedLine);
+				} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+					NSLog(@"Couldn't report untranslated line %@: %@", unescapedLine, error);
+				}];
+			}
+		}
+		
 		return line;
 	}
 }
 
-- (NSData *)translateJSON:(NSData *)json
+- (NSData *)translateJSON:(NSData *)json pathForReporting:(NSString *)path
 {
 	// Skip the svdata= prefix if it exists
 	NSData *prefixData = [@"svdata=" dataUsingEncoding:NSUTF8StringEncoding];
@@ -70,7 +97,7 @@
 	
 	if(!error)
 	{
-		NSData *data = [NSJSONSerialization dataWithJSONObject:[self _walk:root] options:0 error:NULL];
+		NSData *data = [NSJSONSerialization dataWithJSONObject:[self _walk:root pathForReporting:path key:nil] options:0 error:NULL];
 		if(!hasPrefix)
 			return data;
 		else
@@ -88,16 +115,16 @@
 	}
 }
 
-- (id)_walk:(id)obj
+- (id)_walk:(id)obj pathForReporting:(NSString *)path key:(NSString *)key
 {
 	if([obj isKindOfClass:[NSDictionary class]])
-		for (id<NSCopying> key in [obj allKeys])
-			[obj setObject:[self _walk:[obj objectForKey:key]] forKey:key];
+		for (NSString *dkey in [obj allKeys])
+			[obj setObject:[self _walk:[obj objectForKey:dkey] pathForReporting:path key:dkey] forKey:dkey];
 	else if([obj isKindOfClass:[NSArray class]])
 		for(NSInteger i = 0; i < [obj count]; i++)
-			[obj replaceObjectAtIndex:i withObject:[self _walk:[obj objectAtIndex:i]]];
+			[obj replaceObjectAtIndex:i withObject:[self _walk:[obj objectAtIndex:i] pathForReporting:path key:key]];
 	else if([obj isKindOfClass:[NSString class]])
-		return [self translate:obj];
+		return [self translate:obj pathForReporting:path key:key];
 	
 	// Ignore these!
 	else if([obj isKindOfClass:[NSNumber class]]) {}

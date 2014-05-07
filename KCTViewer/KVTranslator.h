@@ -9,12 +9,16 @@
 #import <Foundation/Foundation.h>
 
 @interface KVTranslator : NSObject
+{
+	AFHTTPRequestOperationManager *_manager;
+}
 
 @property (nonatomic, strong) NSDictionary *tldata;
+@property (nonatomic, strong) NSDictionary *reportBlacklist;
 
 + (instancetype)sharedTranslator;
 
-- (NSString *)translate:(NSString *)line;
-- (NSData *)translateJSON:(NSData *)json;
+- (NSString *)translate:(NSString *)line pathForReporting:(NSString *)path key:(NSString *)key;
+- (NSData *)translateJSON:(NSData *)json pathForReporting:(NSString *)path;
 
 @end

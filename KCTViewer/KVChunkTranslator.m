@@ -9,25 +9,51 @@
 #import "KVChunkTranslator.h"
 #import "KVTranslator.h"
 
-int KVChunkTranslator_cb_null(void *ctx) { return yajl_gen_null(ctx) == yajl_gen_status_ok; }
-int KVChunkTranslator_cb_boolean(void *ctx, int val) { return yajl_gen_bool(ctx, val) == yajl_gen_status_ok; }
-int KVChunkTranslator_cb_number(void *ctx, const char *val, size_t len) { return yajl_gen_number(ctx, val, len) == yajl_gen_status_ok; }
-int KVChunkTranslator_cb_start_map(void *ctx) { return yajl_gen_map_open(ctx) == yajl_gen_status_ok; }
-int KVChunkTranslator_cb_map_key(void *ctx, const unsigned char *key, size_t len) { return yajl_gen_string(ctx, key, len) == yajl_gen_status_ok; }
-int KVChunkTranslator_cb_end_map(void *ctx) { return yajl_gen_map_close(ctx) == yajl_gen_status_ok; }
-int KVChunkTranslator_cb_start_array(void *ctx) { return yajl_gen_array_open(ctx) == yajl_gen_status_ok; }
-int KVChunkTranslator_cb_end_array(void *ctx) { return yajl_gen_array_close(ctx) == yajl_gen_status_ok; }
+int KVChunkTranslator_cb_null(void *_ctx) { return yajl_gen_null(((KVChunkTranslator_ctx_t*)_ctx)->generator) == yajl_gen_status_ok; }
+int KVChunkTranslator_cb_boolean(void *_ctx, int val) { return yajl_gen_bool(((KVChunkTranslator_ctx_t*)_ctx)->generator, val) == yajl_gen_status_ok; }
+int KVChunkTranslator_cb_number(void *_ctx, const char *val, size_t len) { return yajl_gen_number(((KVChunkTranslator_ctx_t*)_ctx)->generator, val, len) == yajl_gen_status_ok; }
+int KVChunkTranslator_cb_start_array(void *_ctx) { return yajl_gen_array_open(((KVChunkTranslator_ctx_t*)_ctx)->generator) == yajl_gen_status_ok; }
+int KVChunkTranslator_cb_end_array(void *_ctx) { return yajl_gen_array_close(((KVChunkTranslator_ctx_t*)_ctx)->generator) == yajl_gen_status_ok; }
 
-int KVChunkTranslator_cb_string(void *ctx, const unsigned char *val, size_t len)
+int KVChunkTranslator_cb_start_map(void *_ctx)
 {
+	KVChunkTranslator_ctx_t *ctx = ((KVChunkTranslator_ctx_t*)_ctx);
+	++ctx->keyStackSize;
+	if(ctx->keyStack == NULL) ctx->keyStack = malloc(sizeof(KVChunkTranslator_key_t)*ctx->keyStackSize);
+	else ctx->keyStack = realloc(ctx->keyStack, sizeof(KVChunkTranslator_key_t*)*ctx->keyStackSize);
+	ctx->keyStack[ctx->keyStackSize-1] = calloc(1, sizeof(KVChunkTranslator_key_t));
+	return yajl_gen_map_open(ctx->generator) == yajl_gen_status_ok;
+}
+
+int KVChunkTranslator_cb_end_map(void *_ctx)
+{
+	KVChunkTranslator_ctx_t *ctx = ((KVChunkTranslator_ctx_t*)_ctx);
+	free(ctx->keyStack[ctx->keyStackSize-1]);
+	--ctx->keyStackSize;
+	// No need to realloc to shrink here, really
+	return yajl_gen_map_close(ctx->generator) == yajl_gen_status_ok;
+}
+int KVChunkTranslator_cb_map_key(void *_ctx, const unsigned char *key, size_t len)
+{
+	KVChunkTranslator_ctx_t *ctx = ((KVChunkTranslator_ctx_t*)_ctx);
+	ctx->keyStack[ctx->keyStackSize-1]->key = key;
+	ctx->keyStack[ctx->keyStackSize-1]->length = len;
+	return yajl_gen_string(ctx->generator, key, len) == yajl_gen_status_ok;
+}
+
+int KVChunkTranslator_cb_string(void *_ctx, const unsigned char *val, size_t len)
+{
+	KVChunkTranslator_ctx_t *ctx = ((KVChunkTranslator_ctx_t*)_ctx);
 	NSString *nsstr = [[NSString alloc] initWithBytes:val length:len encoding:NSUTF8StringEncoding];
-	NSString *tlstr = [[KVTranslator sharedTranslator] translate:nsstr];
-	return yajl_gen_string(ctx, (const unsigned char*)[tlstr UTF8String], [tlstr lengthOfBytesUsingEncoding:NSUTF8StringEncoding]) == yajl_gen_status_ok;
+	NSString *nspath = [[NSString alloc] initWithUTF8String:ctx->path];
+	NSString *nskey = (ctx->keyStackSize != 0 ? [[NSString alloc] initWithBytes:ctx->keyStack[ctx->keyStackSize-1]->key length:ctx->keyStack[ctx->keyStackSize-1]->length encoding:NSUTF8StringEncoding] : NULL);
+	NSString *tlstr = [[KVTranslator sharedTranslator] translate:nsstr pathForReporting:nspath key:nskey];
+	return yajl_gen_string(ctx->generator, (const unsigned char*)[tlstr UTF8String], [tlstr lengthOfBytesUsingEncoding:NSUTF8StringEncoding]) == yajl_gen_status_ok;
 }
 
 @implementation KVChunkTranslator
 
-- (id)init
+- (id)initWithPathForReporting:(NSString *)path
 {
 	if((self = [super init]))
 	{
@@ -42,7 +68,13 @@ int KVChunkTranslator_cb_string(void *ctx, const unsigned char *val, size_t len)
 		_parser_callbacks.yajl_end_array = &KVChunkTranslator_cb_end_array;
 		
 		_generator = yajl_gen_alloc(NULL);
-		_parser = yajl_alloc(&_parser_callbacks, NULL, _generator);
+		_parser = yajl_alloc(&_parser_callbacks, NULL, &_ctx);
+		
+		_ctx.parser = _parser;
+		_ctx.generator = _generator;
+		_ctx.path = strdup([path UTF8String]);
+		_ctx.keyStack = NULL;
+		_ctx.keyStackSize = 0;
 	}
 	
 	return self;
@@ -52,6 +84,10 @@ int KVChunkTranslator_cb_string(void *ctx, const unsigned char *val, size_t len)
 {
 	yajl_free(_parser);
 	yajl_gen_free(_generator);
+	free(_ctx.path);
+	
+	if(_ctx.keyStack != NULL)
+		free(_ctx.keyStack);
 }
 
 - (NSData *)receivedChunk:(NSData *)chunk
