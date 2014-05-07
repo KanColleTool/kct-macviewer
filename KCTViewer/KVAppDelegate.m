@@ -123,7 +123,7 @@
 				}
 				else
 				{
-					[[KVTranslator sharedTranslator] setTldata:[res objectForKey:@"translation"]];
+					[[KVTranslator sharedTranslator] setTldata:[[res objectForKey:@"translation"] mutableCopy]];
 				}
 			}
 			else

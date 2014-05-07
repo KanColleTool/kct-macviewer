@@ -13,7 +13,7 @@
 	AFHTTPRequestOperationManager *_manager;
 }
 
-@property (nonatomic, strong) NSDictionary *tldata;
+@property (nonatomic, strong) NSMutableDictionary *tldata;
 @property (nonatomic, strong) NSDictionary *reportBlacklist;
 
 + (instancetype)sharedTranslator;
