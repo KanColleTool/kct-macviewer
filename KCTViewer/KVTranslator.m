@@ -65,9 +65,12 @@
 	}
 	else
 	{
-		NSLog(@"No TL: %@->%@: %@", path, key, unescapedLine);
-		if([[NSUserDefaults standardUserDefaults] boolForKey:@"reportUntranslated"] && [path length] > 0)
+		//NSLog(@"No TL: %@->%@: %@", path, key, unescapedLine);
+		// Note the last condition: we only want to report lines that are absent (nil/NULL/0), not ones that are
+		// present but untranslated (JSON-null).
+		if([[NSUserDefaults standardUserDefaults] boolForKey:@"reportUntranslated"] && [path length] > 0 && translation == nil)
 		{
+			NSLog(@"Reporting untranslated line: %@->%@: %@", path, key, unescapedLine);
 			NSArray *blacklistedKeys = [_reportBlacklist objectForKey:path];
 			if(![blacklistedKeys containsObject:key])
 			{

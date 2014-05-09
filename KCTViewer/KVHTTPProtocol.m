@@ -39,7 +39,7 @@
 	
 	if([self isInteresting])
 	{
-		self.translator = [[KVChunkTranslator alloc] initWithPathForReporting:[self.request.URL.path stringByReplacingOccurrencesOfString:@"/kcsapi" withString:@""]];
+		self.translator = [[KVChunkTranslator alloc] initWithPathForReporting:[self.request.URL.path lastPathComponent]];
 		self.toolSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
 		NSError *error = nil;
 		[self.toolSocket connectToHost:@"127.0.0.1" onPort:54321 error:&error];
