@@ -70,10 +70,10 @@
 		// present but untranslated (JSON-null).
 		if([[NSUserDefaults standardUserDefaults] boolForKey:@"reportUntranslated"] && [path length] > 0 && translation == nil)
 		{
-			NSLog(@"Reporting untranslated line: %@->%@: %@", path, key, unescapedLine);
 			NSArray *blacklistedKeys = [_reportBlacklist objectForKey:path];
 			if(![blacklistedKeys containsObject:key])
 			{
+				NSLog(@"Reporting untranslated line: %@->%@: %@", path, key, unescapedLine);
 				[_tldata setValue:[NSNull null] forKey:crc32];
 				[_manager POST:[NSString stringWithFormat:@"/report/%@", path] parameters:@{@"value": unescapedLine} success:^(AFHTTPRequestOperation *operation, id responseObject) {
 					NSLog(@"Reported untranslated line: %@", unescapedLine);

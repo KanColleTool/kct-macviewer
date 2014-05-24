@@ -30,6 +30,8 @@
 		2272E5D2186E0637009357C4 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2272E5D1186E0637009357C4 /* WebKit.framework */; };
 		2272E5D5186E182F009357C4 /* NSURL+KVUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 2272E5D4186E182F009357C4 /* NSURL+KVUtil.m */; };
 		2272E5D7186E1F38009357C4 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 2272E5D6186E1F38009357C4 /* index.html */; };
+		22A18C8B192F6D8900A6B0CF /* KVTempFileHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = 22A18C8A192F6D8900A6B0CF /* KVTempFileHandle.m */; };
+		22FF3C7219220EF300E3D164 /* KVUserDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 22FF3C7119220EF300E3D164 /* KVUserDataStore.m */; };
 		462800AEE4E14EAFBBFF83F6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6660C71C3E9B4E00A12FBBED /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -95,6 +97,10 @@
 		2272E5D3186E182F009357C4 /* NSURL+KVUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+KVUtil.h"; sourceTree = "<group>"; };
 		2272E5D4186E182F009357C4 /* NSURL+KVUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+KVUtil.m"; sourceTree = "<group>"; };
 		2272E5D6186E1F38009357C4 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
+		22A18C89192F6D8900A6B0CF /* KVTempFileHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KVTempFileHandle.h; sourceTree = "<group>"; };
+		22A18C8A192F6D8900A6B0CF /* KVTempFileHandle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KVTempFileHandle.m; sourceTree = "<group>"; };
+		22FF3C7019220EF300E3D164 /* KVUserDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KVUserDataStore.h; sourceTree = "<group>"; };
+		22FF3C7119220EF300E3D164 /* KVUserDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KVUserDataStore.m; sourceTree = "<group>"; };
 		6660C71C3E9B4E00A12FBBED /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E12E3265D2C6486CA73E4158 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -155,6 +161,10 @@
 				225515A719138D3300C2D967 /* KVChunkTranslator.m */,
 				226DCED718F2BB790036A536 /* KVLogger.h */,
 				226DCED818F2BB790036A536 /* KVLogger.m */,
+				22FF3C7019220EF300E3D164 /* KVUserDataStore.h */,
+				22FF3C7119220EF300E3D164 /* KVUserDataStore.m */,
+				22A18C89192F6D8900A6B0CF /* KVTempFileHandle.h */,
+				22A18C8A192F6D8900A6B0CF /* KVTempFileHandle.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -406,11 +416,13 @@
 				2272E5AA186E05CA009357C4 /* main.m in Sources */,
 				2272E5D5186E182F009357C4 /* NSURL+KVUtil.m in Sources */,
 				226DCED918F2BB790036A536 /* KVLogger.m in Sources */,
+				22A18C8B192F6D8900A6B0CF /* KVTempFileHandle.m in Sources */,
 				22110FC018910B1600EDEEEC /* KVCachingHTTPProtocol.m in Sources */,
 				22555F5B188ECC5800E2980B /* KVTranslator.m in Sources */,
 				22555F50188EAECF00E2980B /* NSString+KVHashes.m in Sources */,
 				225515A819138D3300C2D967 /* KVChunkTranslator.m in Sources */,
 				2272E5B1186E05CA009357C4 /* KVAppDelegate.m in Sources */,
+				22FF3C7219220EF300E3D164 /* KVUserDataStore.m in Sources */,
 				22110FC318910B7200EDEEEC /* KVCacheEntry.m in Sources */,
 				226F33B51886B55000FAF389 /* KVHTTPProtocol.m in Sources */,
 			);

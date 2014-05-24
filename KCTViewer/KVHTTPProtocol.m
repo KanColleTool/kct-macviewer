@@ -8,6 +8,7 @@
 
 #import "KVHTTPProtocol.h"
 #import "KVTranslator.h"
+#import "KVUserDataStore.h"
 
 @implementation KVHTTPProtocol
 
@@ -34,13 +35,16 @@
 - (void)startLoading
 {
 	[[self class] setProperty:[NSNumber numberWithBool:YES] forKey:@"_handled" inRequest:(NSMutableURLRequest*)self.request];
-	self.interesting = [self.request.URL.path hasPrefix:@"/kcsapi"];
+	NSString *apiPrefix = @"/kcsapi";
+	self.interesting = [self.request.URL.path hasPrefix:apiPrefix];
 	self.connection = [NSURLConnection connectionWithRequest:self.request delegate:self];
 	
 	if([self isInteresting])
 	{
 		self.translator = [[KVChunkTranslator alloc] initWithPathForReporting:[self.request.URL.path lastPathComponent]];
 		self.toolSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+		self.cacheFile = [[KVUserDataStore sharedDataStore] cacheFileHandleForEndpoint:[self.request.URL.path substringFromIndex:[apiPrefix length]] page:0];
+		
 		NSError *error = nil;
 		[self.toolSocket connectToHost:@"127.0.0.1" onPort:54321 error:&error];
 		if(error)
@@ -61,11 +65,7 @@
 	if([self isInteresting])
 	{
 		NSData *translatedChunk = [_translator receivedChunk:data];
-		if(translatedChunk)
-		{
-			[self.client URLProtocol:self didLoadData:translatedChunk];
-		}
-		else
+		if(!translatedChunk)
 		{
 			// Bail out if the translator errors!
 			NSLog(@"Translation Error!");
@@ -75,6 +75,8 @@
 			return;
 		}
 		
+		[self.client URLProtocol:self didLoadData:translatedChunk];
+		
 		if(self.toolSocket)
 		{
 			NSMutableData *chunk = [[NSMutableData alloc] init];
@@ -83,9 +85,14 @@
 			[chunk appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
 			[self.toolSocket writeData:chunk withTimeout:10 tag:1];
 		}
+		
+		[self.cacheFile.fileHandle writeData:translatedChunk];
 	}
 	else
+	{
 		[self.client URLProtocol:self didLoadData:data];
+		[self.cacheFile.fileHandle writeData:data];
+	}
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
@@ -111,6 +118,11 @@
 {
 	[self.toolSocket writeData:[@"0\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding] withTimeout:10 tag:2];
 	[self.toolSocket disconnectAfterReadingAndWriting];
+	
+	NSError *error = nil;
+	[self.cacheFile closeAndOverwrite:&error];
+	if(error)
+		NSLog(@"Couldn't close and overwrite: %@", error);
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
@@ -126,11 +138,15 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
-	NSLog(@"-> Data with Tag %ld Written", tag);
+	//NSLog(@"-> Data with Tag %ld Written", tag);
 }
 
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
+	// POSIX::61 = Connection refused; that just means that the Tool isn't running
+	if(err.domain == NSPOSIXErrorDomain && err.code == 61)
+		return;
+	
 	NSLog(@"--> Disconnected: %@", err);
 }
 

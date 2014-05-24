@@ -8,12 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import "KVChunkTranslator.h"
+#import "KVTempFileHandle.h"
 #import <GCDAsyncSocket.h>
 
 @interface KVHTTPProtocol : NSURLProtocol <NSURLConnectionDelegate,NSURLConnectionDataDelegate,GCDAsyncSocketDelegate>
 
 @property (nonatomic, strong) NSURLConnection *connection;
 @property (nonatomic, strong) GCDAsyncSocket *toolSocket;
+@property (nonatomic, strong) KVTempFileHandle *cacheFile;
 @property (nonatomic, strong) KVChunkTranslator *translator;
 @property (nonatomic, assign, getter=isInteresting) BOOL interesting;
 
