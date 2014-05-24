@@ -29,8 +29,8 @@
 		2272E5C8186E05CA009357C4 /* KCTViewerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2272E5C7186E05CA009357C4 /* KCTViewerTests.mm */; };
 		2272E5D2186E0637009357C4 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2272E5D1186E0637009357C4 /* WebKit.framework */; };
 		2272E5D5186E182F009357C4 /* NSURL+KVUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 2272E5D4186E182F009357C4 /* NSURL+KVUtil.m */; };
-		2272E5D7186E1F38009357C4 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 2272E5D6186E1F38009357C4 /* index.html */; };
 		22A18C8B192F6D8900A6B0CF /* KVTempFileHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = 22A18C8A192F6D8900A6B0CF /* KVTempFileHandle.m */; };
+		22A18C8D1930926400A6B0CF /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 22A18C8C1930926400A6B0CF /* index.html */; };
 		22FF3C7219220EF300E3D164 /* KVUserDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 22FF3C7119220EF300E3D164 /* KVUserDataStore.m */; };
 		462800AEE4E14EAFBBFF83F6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6660C71C3E9B4E00A12FBBED /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -96,9 +96,9 @@
 		2272E5D1186E0637009357C4 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		2272E5D3186E182F009357C4 /* NSURL+KVUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+KVUtil.h"; sourceTree = "<group>"; };
 		2272E5D4186E182F009357C4 /* NSURL+KVUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+KVUtil.m"; sourceTree = "<group>"; };
-		2272E5D6186E1F38009357C4 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 		22A18C89192F6D8900A6B0CF /* KVTempFileHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KVTempFileHandle.h; sourceTree = "<group>"; };
 		22A18C8A192F6D8900A6B0CF /* KVTempFileHandle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KVTempFileHandle.m; sourceTree = "<group>"; };
+		22A18C8C1930926400A6B0CF /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = ../../viewer/resources/index.html; sourceTree = "<group>"; };
 		22FF3C7019220EF300E3D164 /* KVUserDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KVUserDataStore.h; sourceTree = "<group>"; };
 		22FF3C7119220EF300E3D164 /* KVUserDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KVUserDataStore.m; sourceTree = "<group>"; };
 		6660C71C3E9B4E00A12FBBED /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -270,7 +270,7 @@
 			isa = PBXGroup;
 			children = (
 				2272E5B5186E05CA009357C4 /* Images.xcassets */,
-				2272E5D6186E1F38009357C4 /* index.html */,
+				22A18C8C1930926400A6B0CF /* index.html */,
 				222EEC6C191A90EA008CF66F /* report_blacklist.json */,
 			);
 			name = Resources;
@@ -356,11 +356,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2272E5D7186E1F38009357C4 /* index.html in Resources */,
 				2272E5A8186E05CA009357C4 /* InfoPlist.strings in Resources */,
 				2272E5B6186E05CA009357C4 /* Images.xcassets in Resources */,
 				2272E5AE186E05CA009357C4 /* Credits.rtf in Resources */,
 				2272E5B4186E05CA009357C4 /* MainMenu.xib in Resources */,
+				22A18C8D1930926400A6B0CF /* index.html in Resources */,
 				222EEC6D191A90EA008CF66F /* report_blacklist.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

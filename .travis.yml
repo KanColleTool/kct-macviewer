@@ -6,6 +6,9 @@ before_install:
   - brew upgrade xctool
   - brew install cmake
   - gem install cocoapods
+before_script:
+  - touch ../viewer/resources/report_blacklist.json
+  - touch ../viewer/resources/index.html
 xcode_workspace: KCTViewer.xcworkspace
 xcode_scheme: KCTViewer
 
