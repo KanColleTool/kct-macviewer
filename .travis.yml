@@ -1,9 +1,11 @@
 language: objective-c
 before_install:
   - export LANG="en_US.UTF-8"
-  - gem update --system
+#  - gem update --system
   - brew update
   - brew upgrade xctool
+  - brew install cmake
   - gem install cocoapods
 xcode_workspace: KCTViewer.xcworkspace
 xcode_scheme: KCTViewer
+
