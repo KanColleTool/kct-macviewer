@@ -40,6 +40,11 @@
 	return self;
 }
 
+- (NSString *)translate:(NSString *)line
+{
+	return [self translate:line pathForReporting:nil key:nil];
+}
+
 - (NSString *)translate:(NSString *)line pathForReporting:(NSString *)path key:(NSString *)key
 {
 	// Don't translate things that are just numbers and punctuation, such as some stats that are sent as
@@ -85,6 +90,11 @@
 		
 		return line;
 	}
+}
+
+- (NSData *)translateJSON:(NSData *)json
+{
+	return [self translateJSON:json pathForReporting:nil];
 }
 
 - (NSData *)translateJSON:(NSData *)json pathForReporting:(NSString *)path

@@ -82,13 +82,13 @@
 														},
 												@"api_data_array": @[ @"赤城", @"加賀" ]					// 赤城 = Akagi, 加賀 = Kaga
 												} };
-	translator.tldata = @{
+	translator.tldata = [@{
 						  @"1140633492": @"Success",
 						  @"124853853": @"Naka",
 						  @"2751887919": @"Kongou",
 						  @"34282435": @"Akagi",
 						  @"3302450663": @"Kaga"
-						  };
+						  } mutableCopy];
 	
 	// Encode the response
 	NSError *serializationError = nil;
