@@ -26,7 +26,6 @@
 - (void)loadTranslationFinished;
 - (void)loadBundledIndex;
 
-- (IBAction)actionCheckForUpdates:(id)sender;
 - (IBAction)actionEnterAPILink:(id)sender;
 - (IBAction)actionClearCache:(id)sender;
 - (IBAction)actionReset:(id)sender;

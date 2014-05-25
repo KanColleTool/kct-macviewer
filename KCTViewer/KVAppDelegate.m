@@ -174,11 +174,6 @@
 	}
 }
 
-- (void)actionCheckForUpdates:(id)sender
-{
-	[self checkForUpdates];
-}
-
 - (void)actionEnterAPILink:(id)sender
 {
 	[self.window beginSheet:self.enterAPILinkWindow completionHandler:^(NSModalResponse returnCode) {
