@@ -15,7 +15,7 @@
 	NSMutableDictionary *items = [[NSMutableDictionary alloc] init];
 	
 	// Split the string by '&'...
-	for (NSString *component in [self componentsSeparatedByString:@"&"]) {
+	for (NSString *component in [[self stringByRemovingPercentEncoding] componentsSeparatedByString:@"&"]) {
 		// ...then those parts by '='.
 		NSArray *halves = [component componentsSeparatedByString:@"="];
 		
