@@ -40,6 +40,11 @@
 	return self;
 }
 
+- (NSString *)translate:(NSString *)line
+{
+	return [self translate:line pathForReporting:nil key:nil];
+}
+
 - (NSString *)translate:(NSString *)line pathForReporting:(NSString *)path key:(NSString *)key
 {
 	// Don't translate things that are just numbers and punctuation, such as some stats that are sent as
@@ -70,10 +75,10 @@
 		// present but untranslated (JSON-null).
 		if([[NSUserDefaults standardUserDefaults] boolForKey:@"reportUntranslated"] && [path length] > 0 && translation == nil)
 		{
-			NSLog(@"Reporting untranslated line: %@->%@: %@", path, key, unescapedLine);
 			NSArray *blacklistedKeys = [_reportBlacklist objectForKey:path];
 			if(![blacklistedKeys containsObject:key])
 			{
+				NSLog(@"Reporting untranslated line: %@->%@: %@", path, key, unescapedLine);
 				[_tldata setValue:[NSNull null] forKey:crc32];
 				[_manager POST:[NSString stringWithFormat:@"/report/%@", path] parameters:@{@"value": unescapedLine} success:^(AFHTTPRequestOperation *operation, id responseObject) {
 					NSLog(@"Reported untranslated line: %@", unescapedLine);
@@ -85,6 +90,11 @@
 		
 		return line;
 	}
+}
+
+- (NSData *)translateJSON:(NSData *)json
+{
+	return [self translateJSON:json pathForReporting:nil];
 }
 
 - (NSData *)translateJSON:(NSData *)json pathForReporting:(NSString *)path

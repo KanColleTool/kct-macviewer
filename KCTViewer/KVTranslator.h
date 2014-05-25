@@ -18,7 +18,9 @@
 
 + (instancetype)sharedTranslator;
 
+- (NSString *)translate:(NSString *)line;
 - (NSString *)translate:(NSString *)line pathForReporting:(NSString *)path key:(NSString *)key;
+- (NSData *)translateJSON:(NSData *)json;
 - (NSData *)translateJSON:(NSData *)json pathForReporting:(NSString *)path;
 
 @end
