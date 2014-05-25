@@ -18,6 +18,7 @@
 @property (nonatomic, strong) KVTempFileHandle *cacheFile;
 @property (nonatomic, strong) KVChunkTranslator *translator;
 @property (nonatomic, assign, getter=isInteresting) BOOL interesting;
+@property (nonatomic, assign, getter=isTranslationEnabled) BOOL translationEnabled;
 
 - (id)initWithRequest:(NSURLRequest *)request cachedResponse:(NSCachedURLResponse *)cachedResponse client:(id<NSURLProtocolClient>)client;
 + (BOOL)canInitWithRequest:(NSURLRequest *)request;

@@ -28,6 +28,9 @@
 	if((self = [super initWithRequest:[request mutableCopy] cachedResponse:cachedResponse client:client]))
 	{
 		[(NSMutableURLRequest*)self.request setValue:@"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0" forHTTPHeaderField:@"User-Agent"];
+		
+		// Save this value, since we don't want to start translating in the middle of a stream
+		self.translationEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"translationEnabled"];
 	}
 	
 	return self;
@@ -72,18 +75,22 @@
 {
 	if([self isInteresting])
 	{
-		NSData *translatedChunk = [_translator receivedChunk:data];
-		if(!translatedChunk)
+		if([self isTranslationEnabled])
 		{
-			// Bail out if the translator errors!
-			NSLog(@"Translation Error!");
+			NSData *translatedChunk = [_translator receivedChunk:data];
+			if(!translatedChunk)
+			{
+				// Bail out if the translator errors!
+				NSLog(@"Translation Error!");
+				
+				self.interesting = NO;
+				[self connection:connection didReceiveData:data];
+				return;
+			}
 			
-			self.interesting = NO;
-			[self connection:connection didReceiveData:data];
-			return;
+			[self.client URLProtocol:self didLoadData:translatedChunk];
 		}
-		
-		[self.client URLProtocol:self didLoadData:translatedChunk];
+		else [self.client URLProtocol:self didLoadData:data];
 		
 		if(self.toolSocket)
 		{
