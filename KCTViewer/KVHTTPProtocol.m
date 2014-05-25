@@ -93,14 +93,10 @@
 			[chunk appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
 			[self.toolSocket writeData:chunk withTimeout:10 tag:1];
 		}
-		
-		[self.cacheFile.fileHandle writeData:translatedChunk];
 	}
-	else
-	{
-		[self.client URLProtocol:self didLoadData:data];
-		[self.cacheFile.fileHandle writeData:data];
-	}
+	else [self.client URLProtocol:self didLoadData:data];
+	
+	[self.cacheFile.fileHandle writeData:data];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
