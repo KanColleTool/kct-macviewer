@@ -50,7 +50,7 @@
 	KVTranslator *translator = [[KVTranslator alloc] init];
 	
 	// Set up some test data - 那珂 (Naka) has a translation, まるゆ (Maruyu) doesn't
-	translator.tldata = @{ @"124853853": @"Naka", @"3440185848": [NSNull null] };
+	translator.tldata = [@{ @"124853853": @"Naka", @"3440185848": [NSNull null] } mutableCopy];
 	
 	// Try translating a translated string (Naka/那珂)
 	XCTAssertEqualObjects([translator translate:@"那珂"], @"Naka", @"那珂 doesn't translate to Naka!");
