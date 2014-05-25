@@ -9,6 +9,7 @@
 #import "KVHTTPProtocol.h"
 #import "KVTranslator.h"
 #import "KVUserDataStore.h"
+#import "NSString+KVUtil.h"
 
 @implementation KVHTTPProtocol
 
@@ -40,9 +41,17 @@
 	
 	if([self isInteresting])
 	{
+		NSUInteger page = 0;
+		if([self.request.HTTPBody length] <= 1024)
+		{
+			NSString *bodyString = [[NSString alloc] initWithData:self.request.HTTPBody encoding:NSUTF8StringEncoding];
+			NSDictionary *queryItems = [bodyString queryItems];
+			page = (NSUInteger)[[queryItems objectForKey:@"api_page_no"] integerValue];
+		}
+		
 		self.translator = [[KVChunkTranslator alloc] initWithPathForReporting:[self.request.URL.path lastPathComponent]];
 		self.toolSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-		self.cacheFile = [[KVUserDataStore sharedDataStore] cacheFileHandleForEndpoint:self.request.URL.path page:0];
+		self.cacheFile = [[KVUserDataStore sharedDataStore] cacheFileHandleForEndpoint:self.request.URL.path page:page];
 		
 		NSError *error = nil;
 		[self.toolSocket connectToHost:@"127.0.0.1" onPort:54321 error:&error];
