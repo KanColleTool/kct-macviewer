@@ -12,6 +12,7 @@
 @interface KVTranslator ()
 
 - (id)_walk:(id)obj pathForReporting:(NSString *)path key:(NSString *)key;
+- (void)reportLine:(NSString *)line forPath:(NSString *)path key:(NSString *)key;
 
 @end
 
@@ -34,10 +35,21 @@
 	{
 		_manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://api.comeonandsl.am/"]];
 		
-		self.reportBlacklist = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"report_blacklist" ofType:@"json"]] options:0 error:NULL];
+		//self.reportBlacklist = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"report_blacklist" ofType:@"json"]] options:0 error:NULL];
 	}
 	
 	return self;
+}
+
+- (void)setReportBlacklist:(NSDictionary *)reportBlacklist
+{
+	if(!_reportBlacklist)
+	{
+		for(NSDictionary *dict in reportQueue)
+			[self reportLine:[dict objectForKey:@"line"] forPath:[dict objectForKey:@"path"] key:[dict objectForKey:@"key"]];
+		[reportQueue removeAllObjects];
+	}
+	_reportBlacklist = reportBlacklist;
 }
 
 - (NSString *)translate:(NSString *)line
@@ -72,21 +84,12 @@
 	{
 		//NSLog(@"No TL: %@->%@: %@", path, key, unescapedLine);
 		// Note the last condition: we only want to report lines that are absent (nil/NULL/0), not ones that are
-		// present but untranslated (JSON-null).
+		// present but untranslated (JSON-null, which is parsed into an [NSNull null]).
 		if([[NSUserDefaults standardUserDefaults] boolForKey:@"reportUntranslated"] && [path length] > 0 && translation == nil)
-		{
-			NSArray *blacklistedKeys = [_reportBlacklist objectForKey:path];
-			if(![blacklistedKeys containsObject:key])
-			{
-				NSLog(@"Reporting untranslated line: %@->%@: %@", path, key, unescapedLine);
-				[_tldata setValue:[NSNull null] forKey:crc32];
-				[_manager POST:[NSString stringWithFormat:@"/report/%@", path] parameters:@{@"value": unescapedLine} success:^(AFHTTPRequestOperation *operation, id responseObject) {
-					NSLog(@"Reported untranslated line: %@", unescapedLine);
-				} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-					NSLog(@"Couldn't report untranslated line %@: %@", unescapedLine, error);
-				}];
-			}
-		}
+			[self reportLine:unescapedLine forPath:path key:key];
+		
+		// Set it as [NSNull null] to make sure we don't try to repor the same line twice
+		[_tldata setValue:[NSNull null] forKey:crc32];
 		
 		return line;
 	}
@@ -147,6 +150,26 @@
 		NSLog(@"!!!!> Don't know what to do about a %@...", [obj class]);
 	
 	return obj;
+}
+
+- (void)reportLine:(NSString *)line forPath:(NSString *)path key:(NSString *)key
+{
+	if(_reportBlacklist)
+	{
+		NSArray *blacklistedKeys = [_reportBlacklist objectForKey:path];
+		if(![blacklistedKeys containsObject:key])
+		{
+			[_manager POST:[NSString stringWithFormat:@"/report/%@", path] parameters:@{@"value": line} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+				NSLog(@"Reported untranslated line: %@", line);
+			} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+				NSLog(@"Couldn't report untranslated line %@: %@", line, error);
+			}];
+		}
+	}
+	else if(!_reportingDisabledDueToErrors)
+	{
+		[reportQueue addObject:@{@"line": line, @"path": path, @"key": key}];
+	}
 }
 
 @end

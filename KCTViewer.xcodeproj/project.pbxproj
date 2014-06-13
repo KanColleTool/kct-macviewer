@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		22110FC018910B1600EDEEEC /* KVCachingHTTPProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 22110FBF18910B1600EDEEEC /* KVCachingHTTPProtocol.m */; };
 		22110FC318910B7200EDEEEC /* KVCacheEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 22110FC218910B7200EDEEEC /* KVCacheEntry.m */; };
-		222EEC6D191A90EA008CF66F /* report_blacklist.json in Resources */ = {isa = PBXBuildFile; fileRef = 222EEC6C191A90EA008CF66F /* report_blacklist.json */; };
 		225515A819138D3300C2D967 /* KVChunkTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = 225515A719138D3300C2D967 /* KVChunkTranslator.m */; };
 		22555F50188EAECF00E2980B /* NSString+KVHashes.m in Sources */ = {isa = PBXBuildFile; fileRef = 22555F4F188EAECF00E2980B /* NSString+KVHashes.m */; };
 		22555F52188EB6A300E2980B /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 22555F51188EB6A300E2980B /* libz.dylib */; };
@@ -63,7 +62,6 @@
 		22110FBF18910B1600EDEEEC /* KVCachingHTTPProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KVCachingHTTPProtocol.m; sourceTree = "<group>"; };
 		22110FC118910B7200EDEEEC /* KVCacheEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KVCacheEntry.h; sourceTree = "<group>"; };
 		22110FC218910B7200EDEEEC /* KVCacheEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KVCacheEntry.m; sourceTree = "<group>"; };
-		222EEC6C191A90EA008CF66F /* report_blacklist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = report_blacklist.json; path = ../../viewer/resources/report_blacklist.json; sourceTree = "<group>"; };
 		225515A619138D3300C2D967 /* KVChunkTranslator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KVChunkTranslator.h; sourceTree = "<group>"; };
 		225515A719138D3300C2D967 /* KVChunkTranslator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KVChunkTranslator.m; sourceTree = "<group>"; };
 		22555F4E188EAECF00E2980B /* NSString+KVHashes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+KVHashes.h"; sourceTree = "<group>"; };
@@ -276,7 +274,6 @@
 			children = (
 				2272E5B5186E05CA009357C4 /* Images.xcassets */,
 				22A18C8C1930926400A6B0CF /* index.html */,
-				222EEC6C191A90EA008CF66F /* report_blacklist.json */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -366,7 +363,6 @@
 				2272E5AE186E05CA009357C4 /* Credits.rtf in Resources */,
 				2272E5B4186E05CA009357C4 /* MainMenu.xib in Resources */,
 				22A18C8D1930926400A6B0CF /* index.html in Resources */,
-				222EEC6D191A90EA008CF66F /* report_blacklist.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

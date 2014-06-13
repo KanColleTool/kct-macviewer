@@ -145,6 +145,15 @@
 			
 		}];
 		[op start];
+		
+		// Get the current translation report blacklist
+		[_manager GET:@"https://kancolletool.github.io/report_blacklist.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+			NSLog(@"Report Blacklist Loaded");
+			[KVTranslator sharedTranslator].reportBlacklist = responseObject;
+		} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			// Just disable reporting if we can't load the blacklist for whatever reason
+			[KVTranslator sharedTranslator].reportingDisabledDueToErrors = YES;
+		}];
 	}
 	else [self loadTranslationFinished];
 }

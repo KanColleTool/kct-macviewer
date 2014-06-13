@@ -11,10 +11,12 @@
 @interface KVTranslator : NSObject
 {
 	AFHTTPRequestOperationManager *_manager;
+	NSMutableArray *reportQueue;
 }
 
 @property (nonatomic, strong) NSMutableDictionary *tldata;
 @property (nonatomic, strong) NSDictionary *reportBlacklist;
+@property (nonatomic, assign) BOOL reportingDisabledDueToErrors;
 
 + (instancetype)sharedTranslator;
 
