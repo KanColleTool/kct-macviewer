@@ -3,7 +3,7 @@ before_install:
   - export LANG="en_US.UTF-8"
 #  - gem update --system
   - brew update
-  - brew upgrade xctool
+  - brew upgrade xctool;true
   - brew install cmake
   - gem install cocoapods
 before_script:
