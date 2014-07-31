@@ -3,8 +3,4 @@ KanColleTool OS X Viewer
 
 [![Build Status](https://travis-ci.org/KanColleTool/kct-macviewer.png?branch=master)](https://travis-ci.org/KanColleTool/kct-macviewer)
 
-This is the Mac OS X viewer for [KanColleTool](/KanColleTool/tool). It is a port of the [Qt Viewer](/KanColleTool/viewer) in Objective C, because flash does not work in QtWebKit on OS X.
-
-It allows players to stream data directly from the client instead of getting information from the DMM servers directly, which could lead to a ban.
-
-The viewer can also translate the game on-the-fly by modifying server response text
+The **MacViewer** is an alternative implementation of the [KanColleTool Viewer](https://github.com/KanColleTool/kct-viewer) for Mac OS X, because Flash Player currently doesn't work properly with QtWebKit there.
