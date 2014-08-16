@@ -69,10 +69,11 @@
 	AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:
 								  [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://kancolletool.github.io/VERSION"]]];
 	[op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-		NSString *newVersion = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-		NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleShortVersionString"];
+		NSString *newVersion = [[[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		NSString *appVersion = [[[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleShortVersionString"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
-		BOOL outdated = ([newVersion compare:appVersion options:NSNumericSearch] == NSOrderedAscending);
+		//BOOL outdated = ([newVersion compare:appVersion options:NSNumericSearch] == NSOrderedAscending);
+		BOOL outdated = ![newVersion isEqualToString:appVersion];
 		if(outdated)
 		{
 			[[NSAlert alertWithMessageText:@"New Version Available" defaultButton:@"Download" alternateButton:@"Ignore" otherButton:nil informativeTextWithFormat:@"Version %@ has been released, and is available for download.", newVersion] beginSheetModalForWindow:_window completionHandler:^(NSModalResponse returnCode) {
