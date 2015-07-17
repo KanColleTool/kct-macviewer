@@ -106,7 +106,7 @@
 		
 		// Get the English translation from the server
 		NSMutableURLRequest *req = [_manager.requestSerializer requestWithMethod:@"GET"
-																	   URLString:@"http://api.comeonandsl.am/translation/en/"
+																	   URLString:@"http://yukariin.github.io/en.json"
 																	  parameters:nil error:NULL];
 		[req setTimeoutInterval:10];
 		AFHTTPRequestOperation *op = [_manager HTTPRequestOperationWithRequest:req success:^(AFHTTPRequestOperation *operation, id responseObject) {
