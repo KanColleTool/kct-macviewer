@@ -102,8 +102,9 @@
 		22C46B351931E9F9003949F9 /* NSString+KVUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+KVUtil.m"; sourceTree = "<group>"; };
 		22FF3C7019220EF300E3D164 /* KVUserDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KVUserDataStore.h; sourceTree = "<group>"; };
 		22FF3C7119220EF300E3D164 /* KVUserDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KVUserDataStore.m; sourceTree = "<group>"; };
+		2C5CE04D493FB92A226D75F3 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		6660C71C3E9B4E00A12FBBED /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		E12E3265D2C6486CA73E4158 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		952DE711DB6CBE8E309425CE /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,7 +191,7 @@
 				2272E5C1186E05CA009357C4 /* KCTViewerTests */,
 				2272E59C186E05CA009357C4 /* Frameworks */,
 				2272E59B186E05CA009357C4 /* Products */,
-				E12E3265D2C6486CA73E4158 /* Pods.xcconfig */,
+				4C9DA43692745A8C4F3DF9BE /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -276,6 +277,15 @@
 				22A18C8C1930926400A6B0CF /* index.html */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		4C9DA43692745A8C4F3DF9BE /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				952DE711DB6CBE8E309425CE /* Pods.debug.xcconfig */,
+				2C5CE04D493FB92A226D75F3 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -404,7 +414,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -554,7 +564,7 @@
 		};
 		2272E5CC186E05CA009357C4 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E12E3265D2C6486CA73E4158 /* Pods.xcconfig */;
+			baseConfigurationReference = 952DE711DB6CBE8E309425CE /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "";
@@ -576,7 +586,7 @@
 		};
 		2272E5CD186E05CA009357C4 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E12E3265D2C6486CA73E4158 /* Pods.xcconfig */;
+			baseConfigurationReference = 2C5CE04D493FB92A226D75F3 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "";
@@ -598,7 +608,6 @@
 		};
 		2272E5CF186E05CA009357C4 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E12E3265D2C6486CA73E4158 /* Pods.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/KCTViewer.app/Contents/MacOS/KCTViewer";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -621,7 +630,6 @@
 		};
 		2272E5D0186E05CA009357C4 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E12E3265D2C6486CA73E4158 /* Pods.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/KCTViewer.app/Contents/MacOS/KCTViewer";
 				COMBINE_HIDPI_IMAGES = YES;

@@ -1,11 +1,11 @@
 PODS:
   - AFNetworking (2.2.1):
-    - AFNetworking/NSURLConnection
-    - AFNetworking/NSURLSession
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-    - AFNetworking/UIKit
+    - AFNetworking/NSURLConnection (= 2.2.1)
+    - AFNetworking/NSURLSession (= 2.2.1)
+    - AFNetworking/Reachability (= 2.2.1)
+    - AFNetworking/Security (= 2.2.1)
+    - AFNetworking/Serialization (= 2.2.1)
+    - AFNetworking/UIKit (= 2.2.1)
   - AFNetworking/NSURLConnection (2.2.1):
     - AFNetworking/Reachability
     - AFNetworking/Security
@@ -17,7 +17,7 @@ PODS:
   - AFNetworking/Serialization (2.2.1)
   - CocoaAsyncSocket (7.3.4)
   - FMDB (2.2):
-    - FMDB/standard
+    - FMDB/standard (= 2.2)
   - FMDB/common (2.2)
   - FMDB/standard (2.2):
     - FMDB/common
@@ -30,9 +30,9 @@ DEPENDENCIES:
   - yajl (~> 2.0)
 
 SPEC CHECKSUMS:
-  AFNetworking: 8dde8c8a6597ad95dac332a593c27e541bc87371
-  CocoaAsyncSocket: 6607a16a17ce52c792840e212a6ad07729692765
-  FMDB: f6f4511ad1e9ace38e9b6f4d83c2cddaabf98ea6
-  yajl: c4052d8bf443c1959713604fb4bc508b908ad03d
+  AFNetworking: 59a0b8e9ecd4e194d64b4967232cd2cc83490113
+  CocoaAsyncSocket: f62306fd366dcd81d4fe160e6c296ea872276f41
+  FMDB: 0678cab3b024ea6a2e6ea5dd91fc8eb9a296bf57
+  yajl: 1597676af793b78d195deb0432afdf9746c0bdcd
 
-COCOAPODS: 0.33.1
+COCOAPODS: 0.37.2
